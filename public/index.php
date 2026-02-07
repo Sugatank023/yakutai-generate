@@ -19,8 +19,8 @@ $types = medicineTypes();
     .print-area { width: 148mm; min-height: 210mm; border: 1px solid #000; padding: 8mm; background: #fff; }
     .title { text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 8px; }
     .patient { font-size: 18px; margin-bottom: 8px; border-bottom: 1px solid #000; padding-bottom: 4px; }
-    .box { border: 1px solid #000; padding: 8px; min-height: 45mm; }
-    .medicine-name { margin-top: 8px; font-size: 18px; font-weight: bold; }
+    .box { border: 1px solid #000; padding: 8px; min-height: 95mm; }
+    .medicine-name { margin-top: 12mm; font-size: 18px; font-weight: bold; }
     .desc { margin-top: 6px; min-height: 40mm; white-space: pre-wrap; }
     .pharmacy { margin-top: 12mm; font-size: 12px; }
     .actions { display: flex; gap: 8px; }
@@ -90,9 +90,9 @@ $types = medicineTypes();
         <div id="preview_usage">用法：</div>
         <div id="preview_amount">用量：</div>
         <div id="preview_freq">1日回数：</div>
+        <div class="medicine-name" id="preview_name"></div>
+        <div class="desc" id="preview_desc"></div>
       </div>
-      <div class="medicine-name" id="preview_name"></div>
-      <div class="desc" id="preview_desc"></div>
       <div class="pharmacy" id="preview_pharmacy">
             <div id="preview-pharmacy-name"></div>
             <div id="preview-pharmacy-address"></div>
@@ -140,11 +140,12 @@ $types = medicineTypes();
       const patient = document.getElementById('patient_name').value;
       const type = document.getElementById('medicine_type').value;
       document.getElementById('preview_type').textContent = typeLabel[type] ?? type;
-      document.getElementById('preview_patient').textContent = `患者名：${patient}`;
+      document.getElementById('preview_patient').textContent = patient ? `患者名：${patient}様` : '患者名：';
       document.getElementById('preview_usage').textContent = `用法：${document.getElementById('dosage_usage').value}`;
       document.getElementById('preview_amount').textContent = `用量：${document.getElementById('dosage_amount').value}`;
       document.getElementById('preview_freq').textContent = `1日回数：${document.getElementById('daily_frequency').value}`;
-      document.getElementById('preview_name').textContent = document.getElementById('medicine_name').value;
+      const medicineName = document.getElementById('medicine_name').value;
+      document.getElementById('preview_name').textContent = medicineName ? `・${medicineName}` : '';
       document.getElementById('preview_desc').textContent = document.getElementById('description').value;
     }
 
