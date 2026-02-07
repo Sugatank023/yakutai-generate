@@ -17,12 +17,15 @@ $types = medicineTypes();
     label { display: block; font-size: 12px; margin-top: 8px; }
     input, select, textarea, button { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; }
     .print-area { width: 148mm; min-height: 210mm; border: 1px solid #000; padding: 8mm; background: #fff; }
-    .title { text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 8px; }
-    .patient { font-size: 18px; margin-bottom: 8px; border-bottom: 1px solid #000; padding-bottom: 4px; }
+    .title { text-align: center; font-size: 60px; font-weight: bold; margin-bottom: 8px; }
+    .patient { text-align: center; font-size: 24px; margin-bottom: 8px; padding-bottom: 4px; }
     .box { border: 1px solid #000; padding: 8px; min-height: 95mm; }
+    .usage-label, .usage-main, .usage-freq { font-size: 27px; }
+    .usage-main { margin-left: 1em; }
+    .usage-freq { margin-left: 2em; }
     .medicine-name { margin-top: 12mm; font-size: 18px; font-weight: bold; }
     .desc { margin-top: 6px; min-height: 40mm; white-space: pre-wrap; }
-    .pharmacy { margin-top: 12mm; font-size: 12px; }
+    .pharmacy { margin-top: 12mm; font-size: 24px; text-align: center; }
     .actions { display: flex; gap: 8px; }
     .actions button { flex: 1; }
     @page { size: A5; margin: 8mm; }
@@ -85,11 +88,11 @@ $types = medicineTypes();
 
     <section class="print-area" id="print_area">
       <div class="title" id="preview_type">内服薬</div>
-      <div class="patient" id="preview_patient">患者名：</div>
+      <div class="patient" id="preview_patient"></div>
       <div class="box">
-        <div id="preview_usage">用法：</div>
-        <div id="preview_amount">用量：</div>
-        <div id="preview_freq">1日回数：</div>
+        <div class="usage-label" id="preview_usage">用法</div>
+        <div class="usage-main" id="preview_amount"></div>
+        <div class="usage-freq" id="preview_freq"></div>
         <div class="medicine-name" id="preview_name"></div>
         <div class="desc" id="preview_desc"></div>
       </div>
@@ -140,10 +143,10 @@ $types = medicineTypes();
       const patient = document.getElementById('patient_name').value;
       const type = document.getElementById('medicine_type').value;
       document.getElementById('preview_type').textContent = typeLabel[type] ?? type;
-      document.getElementById('preview_patient').textContent = patient ? `患者名：${patient}様` : '患者名：';
-      document.getElementById('preview_usage').textContent = `用法：${document.getElementById('dosage_usage').value}`;
-      document.getElementById('preview_amount').textContent = `用量：${document.getElementById('dosage_amount').value}`;
-      document.getElementById('preview_freq').textContent = `1日回数：${document.getElementById('daily_frequency').value}`;
+      document.getElementById('preview_patient').textContent = patient ? `${patient}様` : '';
+      document.getElementById('preview_usage').textContent = '用法';
+      document.getElementById('preview_amount').textContent = `${document.getElementById('dosage_usage').value} ${document.getElementById('dosage_amount').value}`.trim();
+      document.getElementById('preview_freq').textContent = document.getElementById('daily_frequency').value;
       const medicineName = document.getElementById('medicine_name').value;
       document.getElementById('preview_name').textContent = medicineName ? `・${medicineName}` : '';
       document.getElementById('preview_desc').textContent = document.getElementById('description').value;
