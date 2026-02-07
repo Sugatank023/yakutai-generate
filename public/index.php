@@ -93,7 +93,11 @@ $types = medicineTypes();
       </div>
       <div class="medicine-name" id="preview_name"></div>
       <div class="desc" id="preview_desc"></div>
-      <div class="pharmacy" id="preview_pharmacy"></div>
+      <div class="pharmacy" id="preview_pharmacy">
+            <div id="preview-pharmacy-name"></div>
+            <div id="preview-pharmacy-address"></div>
+            <div id="preview-pharmacy-tel-fax"></div>
+      </div>
     </section>
   </div>
 
@@ -123,8 +127,13 @@ $types = medicineTypes();
       const res = await fetch('api.php?path=pharmacy');
       const json = await res.json();
       const p = json.data || {};
-      document.getElementById('preview_pharmacy').textContent =
-        `${p.pharmacy_name ?? ''} ${p.address ?? ''} TEL:${p.phone ?? ''} FAX:${p.fax ?? ''}`;
+      document.getElementById('preview-pharmacy-name').textContent =
+        `${p.pharmacy_name ?? ''}`;
+      document.getElementById('preview-pharmacy-address').textContent =
+        `${p.address ?? ''}`;
+      document.getElementById('preview-pharmacy-tel-fax').textContent =
+        `TEL:${p.phone ?? ''} FAX:${p.fax ?? ''}`;
+
     }
 
     function syncPreview() {
