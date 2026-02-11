@@ -20,16 +20,8 @@ $types = medicineTypes();
     .title { text-align: center; font-size: 60px; font-weight: bold; margin-bottom: 8px; }
     .patient { text-align: center; font-size: 36px; margin-bottom: 8px; padding-bottom: 4px; }
     .box { border: 1px solid #000; padding: 8px; min-height: 95mm; }
-<<<<<<< Updated upstream
-    .usage-label, .usage-main, .usage-freq { font-size: 27px; text-align: center; }
-<<<<<<< HEAD
-=======
     .usage-label, .usage-main, .usage-freq { font-size: 33px; text-align: center; }
     .usage-label { text-align: left; }
->>>>>>> Stashed changes
-=======
-    .usage-label { text-align: left; }
->>>>>>> 5e1d249448419be6f6054fe16ada035fff6567cf
     .usage-main, .usage-freq { margin-top: 4px; }
     .medicine-name { margin-top: 12mm; font-size: 18px; font-weight: bold; }
     .desc { margin-top: 6px; min-height: 40mm; white-space: pre-wrap; }
