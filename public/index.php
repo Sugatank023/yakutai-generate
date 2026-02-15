@@ -11,21 +11,96 @@ $types = medicineTypes();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>薬袋作成</title>
   <style>
-    body { font-family: sans-serif; margin: 16px; }
+    body { font-family: "Hiragino Mincho ProN", "Yu Mincho", "MS PMincho", serif; margin: 16px; background: #f4f1e7; color: #1e1a14; }
     .layout { display: grid; grid-template-columns: 360px 1fr; gap: 16px; align-items: start; }
-    .panel { border: 1px solid #ddd; padding: 12px; border-radius: 8px; }
+    .panel { border: 1px solid #ddd; padding: 12px; border-radius: 8px; background: #fff; }
     label { display: block; font-size: 12px; margin-top: 8px; }
     input, select, textarea, button { width: 100%; padding: 8px; margin-top: 4px; box-sizing: border-box; }
-    .print-area { width: 148mm; min-height: 210mm; border: 1px solid #000; padding: 3mm 8mm 3mm; background: #fff; }
-    .title { text-align: center; font-size: 60px; font-weight: bold; margin-bottom: 8px; }
-    .patient { text-align: center; font-size: 36px; margin-bottom: 8px; padding-bottom: 4px; }
-    .box { border: 1px solid #000; padding: 8px; min-height: 95mm; }
+    .print-area {
+      width: 148mm;
+      min-height: 210mm;
+      border: 2px solid var(--theme-color);
+      box-shadow: inset 0 0 0 2px var(--theme-soft);
+      padding: 5mm 8mm 4mm;
+      background: #fffef8;
+      --theme-color: #1f57a5;
+      --theme-soft: #c7d8ef;
+      position: relative;
+    }
+    .print-area::before,
+    .print-area::after {
+      content: "";
+      position: absolute;
+      left: 5mm;
+      right: 5mm;
+      height: 2px;
+      background: var(--theme-color);
+    }
+    .print-area::before { top: 3.5mm; }
+    .print-area::after { bottom: 3.5mm; }
+    .title {
+      text-align: center;
+      font-size: 56px;
+      font-weight: 700;
+      margin: 5mm 0 2mm;
+      letter-spacing: 0.18em;
+      color: var(--theme-color);
+      text-shadow: 1px 1px 0 #e8dac4;
+    }
+    .patient {
+      text-align: center;
+      font-size: 34px;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 2px double var(--theme-color);
+      letter-spacing: 0.08em;
+    }
+    .box {
+      border: 2px solid var(--theme-color);
+      box-shadow: inset 0 0 0 1px var(--theme-soft);
+      padding: 12px;
+      min-height: 95mm;
+      background: repeating-linear-gradient(
+        180deg,
+        rgba(157, 31, 35, 0.06) 0,
+        rgba(157, 31, 35, 0.06) 1px,
+        transparent 1px,
+        transparent 12mm
+      );
+    }
     .usage-label, .usage-main, .usage-freq { font-size: 33px; text-align: center; }
-    .usage-label { text-align: left; }
+    .usage-label { text-align: left; color: var(--theme-color); font-weight: 700; }
     .usage-main, .usage-freq { margin-top: 4px; }
-    .medicine-name { margin-top: 4mm; font-size: 27px; font-weight: bold; }
+    .medicine-name {
+      margin-top: 6mm;
+      font-size: 29px;
+      font-weight: 700;
+      border-top: 1px solid #8d7d6a;
+      padding-top: 3mm;
+    }
     .desc { margin-top: 6px; min-height: 40mm; white-space: pre-wrap; }
-    .pharmacy { margin-top: 12mm; font-size: 24px; text-align: center; }
+    .pharmacy {
+      margin-top: 12mm;
+      font-size: 22px;
+      text-align: center;
+      border-top: 2px double var(--theme-color);
+      padding-top: 4mm;
+      line-height: 1.4;
+      letter-spacing: 0.04em;
+    }
+
+    .print-area.type-internal {
+      --theme-color: #1f57a5;
+      --theme-soft: #c7d8ef;
+    }
+    .print-area.type-external {
+      --theme-color: #b1282f;
+      --theme-soft: #ebc3c6;
+    }
+    .print-area.type-as-needed {
+      --theme-color: #2f8a3a;
+      --theme-soft: #c5e2c9;
+    }
     .actions { display: flex; gap: 8px; }
     .actions button { flex: 1; }
     @page { size: A5; margin: 8mm; }
@@ -33,7 +108,12 @@ $types = medicineTypes();
       .no-print { display: none !important; }
       body { margin: 0; }
       .layout { display: block; }
-      .print-area { border: none; width: auto; min-height: auto; }
+      .print-area {
+        border: 2px solid var(--theme-color);
+        box-shadow: inset 0 0 0 2px var(--theme-soft);
+        width: auto;
+        min-height: auto;
+      }
     }
   </style>
 </head>
@@ -53,6 +133,7 @@ $types = medicineTypes();
       <label>医薬品種別
         <select id="medicine_type">
           <?php foreach ($types as $key => $label): ?>
+            <?php if ($key === 'kampo') continue; ?>
             <option value="<?= htmlspecialchars($key, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></option>
           <?php endforeach; ?>
         </select>
@@ -108,7 +189,6 @@ $types = medicineTypes();
     const typeLabel = {
       external: '外用薬',
       internal: '内服薬',
-      kampo: '漢方薬',
       as_needed: '頓服薬'
     };
 
@@ -139,9 +219,22 @@ $types = medicineTypes();
 
     }
 
+    function applyTheme(type) {
+      const printArea = document.getElementById('print_area');
+      printArea.classList.remove('type-internal', 'type-external', 'type-as-needed');
+      if (type === 'external') {
+        printArea.classList.add('type-external');
+      } else if (type === 'as_needed') {
+        printArea.classList.add('type-as-needed');
+      } else {
+        printArea.classList.add('type-internal');
+      }
+    }
+
     function syncPreview() {
       const patient = document.getElementById('patient_name').value;
       const type = document.getElementById('medicine_type').value;
+      applyTheme(type);
       document.getElementById('preview_type').textContent = typeLabel[type] ?? type;
       document.getElementById('preview_patient').textContent = patient ? `${patient}様` : '';
       document.getElementById('preview_usage').textContent = '用法';
