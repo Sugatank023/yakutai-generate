@@ -19,6 +19,7 @@ $types = medicineTypes();
     .print-area {
       width: 148mm;
       min-height: 210mm;
+      box-sizing: border-box;
       border: 2px solid var(--theme-color);
       box-shadow: inset 0 0 0 2px var(--theme-soft);
       padding: 5mm 8mm 4mm;
@@ -103,16 +104,17 @@ $types = medicineTypes();
     }
     .actions { display: flex; gap: 8px; }
     .actions button { flex: 1; }
-    @page { size: A5; margin: 8mm; }
+    @page { size: A5; margin: 0; }
     @media print {
       .no-print { display: none !important; }
       body { margin: 0; }
       .layout { display: block; }
       .print-area {
+        width: 148mm;
+        min-height: 210mm;
         border: 2px solid var(--theme-color);
         box-shadow: inset 0 0 0 2px var(--theme-soft);
-        width: auto;
-        min-height: auto;
+        margin: 0;
       }
     }
   </style>
