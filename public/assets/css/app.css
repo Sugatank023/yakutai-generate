@@ -1,250 +1,359 @@
+/*
+ * ==========================================================================
+ * app.css — 薬袋印刷WEBシステム 共通スタイルシート
+ * ==========================================================================
+ *
+ * 全画面（index.php / admin.php / pharmacy.php）で共通して使用される
+ * スタイルシートです。
+ *
+ * デザインコンセプト: 「和モダン」
+ *   - クリーム系背景に濃い茶系テキスト、渋いレンガ色のアクセント
+ *   - 明朝体の見出し + ゴシック体の本文
+ *   - グラデーション背景とカードのバックドロップフィルター
+ *
+ * 主要セクション:
+ *   1. CSS変数（テーマトークン）
+ *   2. ベーススタイル（body, ヘッダー）
+ *   3. レイアウト（グリッド、カード）
+ *   4. フォーム要素（input, select, textarea, button）
+ *   5. メッセージ表示（成功・エラー）
+ *   6. テーブル（医薬品一覧）
+ *   7. 薬袋プレビュー（A5サイズ）
+ *   8. テーマカラー切替（内服薬/外用薬/頓服薬）
+ *   9. レスポンシブ対応
+ *   10. 印刷用スタイル
+ * ==========================================================================
+ */
+
+/* ==========================================================================
+   1. CSS変数（テーマトークン）
+   アプリ全体で参照されるカラーパレット・シャドウ・角丸等の設計変数
+   ========================================================================== */
 :root {
-  --bg-main: #f4efe5;
-  --bg-soft: #fcfaf5;
-  --card-bg: rgba(255, 255, 255, 0.92);
-  --line: #d8cbb3;
-  --text-main: #2f241a;
-  --text-sub: #665646;
-  --brand: #8c3d2f;
-  --brand-deep: #6f2d22;
-  --accent-blue: #1f57a5;
-  --accent-red: #b1282f;
-  --accent-green: #2f8a3a;
-  --shadow-soft: 0 10px 26px rgba(71, 43, 27, 0.08);
-  --radius-m: 12px;
+  --bg-main: #f4efe5;            /* メイン背景色（クリーム色） */
+  --bg-soft: #fcfaf5;            /* ソフト背景色（より明るいクリーム） */
+  --card-bg: rgba(255, 255, 255, 0.92); /* カード背景色（半透明の白） */
+  --line: #d8cbb3;               /* 区切り線の色 */
+  --text-main: #2f241a;          /* メインテキスト色（濃い茶色） */
+  --text-sub: #665646;           /* サブテキスト色（中間の茶色） */
+  --brand: #8c3d2f;              /* ブランドカラー（渋いレンガ色） */
+  --brand-deep: #6f2d22;         /* ブランドカラー深色（ボタン背景のグラデーション用） */
+  --accent-blue: #1f57a5;        /* 内服薬テーマカラー（青） */
+  --accent-red: #b1282f;         /* 外用薬テーマカラー（赤） */
+  --accent-green: #2f8a3a;       /* 頓服薬テーマカラー（緑） */
+  --shadow-soft: 0 10px 26px rgba(71, 43, 27, 0.08); /* カードのソフトシャドウ */
+  --radius-m: 12px;              /* 中サイズの角丸 */
 }
 
+/* ==========================================================================
+   2. ベーススタイル
+   ========================================================================== */
+
+/* 全要素のbox-sizingをborder-boxに統一（padding/borderを幅に含める） */
 * { box-sizing: border-box; }
 
+/* body — ページ全体のベーススタイル */
 body {
-  margin: 0;
-  padding: 24px;
-  color: var(--text-main);
+  margin: 0;                     /* デフォルトマージンをリセット */
+  padding: 24px;                 /* ページ全体の余白 */
+  color: var(--text-main);       /* メインテキスト色を適用 */
+  /* 日本語フォントスタック: ヒラギノ角ゴ → 游ゴシック → サンセリフ */
   font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  /* 背景: ラジアルグラデーション + リニアグラデーションの重ね合わせ */
   background:
     radial-gradient(circle at 5% 0%, rgba(255, 255, 255, 0.8) 0, rgba(255, 255, 255, 0) 30%),
     linear-gradient(160deg, #f7f3ea 0%, var(--bg-main) 45%, #efe4d2 100%);
-  min-height: 100vh;
+  min-height: 100vh;             /* ビューポートの高さを最低高さに設定 */
 }
 
+/* ページヘッダー — 各画面上部のヘッダー領域 */
 .page-header {
-  margin-bottom: 16px;
+  margin-bottom: 16px;           /* ヘッダー下の余白 */
 }
 
+/* ページヘッダーのh1 — 明朝体で和の雰囲気を演出 */
 .page-header h1 {
   margin: 0;
+  /* 日本語明朝体フォントスタック */
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.08em;        /* 文字間を少し広げて上品な印象に */
 }
 
+/* ページヘッダーの説明文 — サブテキスト色で控えめの表示 */
 .page-header p {
   margin: 8px 0 0;
   color: var(--text-sub);
 }
 
+/* 戻るリンク — ブランドカラーの太字テキストリンク */
 .back-link {
-  color: var(--brand-deep);
-  text-decoration: none;
-  font-weight: 700;
+  color: var(--brand-deep);      /* ブランド深色 */
+  text-decoration: none;         /* 下線なし */
+  font-weight: 700;              /* 太字 */
 }
 
+/* 戻るリンクのホバー効果 — 下線を表示 */
 .back-link:hover { text-decoration: underline; }
 
+/* ==========================================================================
+   3. レイアウト（グリッド、カード）
+   ========================================================================== */
+
+/* メインレイアウト — CSS Gridによる2カラム構成（index.phpで使用） */
+/* 左カラム: 入力パネル（320-390px）/ 右カラム: 薬袋プレビュー（残りの幅） */
 .layout {
   display: grid;
   grid-template-columns: minmax(320px, 390px) minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
+  gap: 20px;                     /* カラム間の隙間 */
+  align-items: start;            /* 上揃え */
 }
 
+/* カード — 共通のカードコンポーネント */
 .card {
-  border: 1px solid rgba(177, 153, 120, 0.5);
-  border-radius: var(--radius-m);
-  background: var(--card-bg);
-  box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(2px);
+  border: 1px solid rgba(177, 153, 120, 0.5); /* 半透明の茶色ボーダー */
+  border-radius: var(--radius-m);              /* 角丸（12px） */
+  background: var(--card-bg);                  /* 半透明白背景 */
+  box-shadow: var(--shadow-soft);              /* ソフトシャドウ */
+  backdrop-filter: blur(2px);                  /* 背景ぼかし効果 */
 }
 
+/* パネル — カード内部のパディング */
 .panel {
   padding: 18px;
 }
 
+/* パネル内のh2 — セクション見出し */
 .panel h2 {
   margin: 0 0 8px;
   font-size: 18px;
 }
 
+/* ==========================================================================
+   4. フォーム要素
+   ========================================================================== */
+
+/* ラベル — フォーム項目のラベル */
 label {
-  display: block;
-  margin-top: 10px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-sub);
+  display: block;                /* ブロック要素として表示 */
+  margin-top: 10px;              /* 上の余白 */
+  font-size: 13px;               /* やや小さめのフォントサイズ */
+  font-weight: 700;              /* 太字 */
+  color: var(--text-sub);        /* サブテキスト色 */
 }
 
+/* input, select, textarea, button — フォーム入力要素の共通スタイル */
 input,
 select,
 textarea,
 button {
-  width: 100%;
-  margin-top: 6px;
-  border-radius: 10px;
-  border: 1px solid #cebda3;
-  padding: 10px 11px;
-  font: inherit;
-  color: var(--text-main);
-  background: #fffdfa;
+  width: 100%;                   /* 幅100%（親要素に合わせる） */
+  margin-top: 6px;               /* ラベルとの間の余白 */
+  border-radius: 10px;           /* 角丸 */
+  border: 1px solid #cebda3;     /* 茶系のボーダー */
+  padding: 10px 11px;            /* 内部余白 */
+  font: inherit;                 /* 親要素のフォントを継承 */
+  color: var(--text-main);       /* メインテキスト色 */
+  background: #fffdfa;           /* ほぼ白に近い背景色 */
 }
 
+/* input, select, textarea のフォーカス時 — アクセント色のボーダーとアウトライン */
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: #a26d4e;
-  outline: 2px solid rgba(168, 99, 69, 0.16);
+  border-color: #a26d4e;         /* フォーカス時のボーダー色（茶色系アクセント） */
+  outline: 2px solid rgba(168, 99, 69, 0.16); /* 半透明のアウトライン */
 }
 
+/* button — ボタンのスタイル（和モダンなグラデーション） */
 button {
-  cursor: pointer;
-  font-weight: 700;
+  cursor: pointer;               /* カーソルをポインターに */
+  font-weight: 700;              /* 太字 */
+  /* レンガ色のグラデーション背景 */
   background: linear-gradient(145deg, #a74f3c, var(--brand-deep));
-  color: #fff;
-  border: none;
+  color: #fff;                   /* 白テキスト */
+  border: none;                  /* ボーダーなし */
+  /* ホバーアニメーション用のトランジション */
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
+/* ボタンのホバー効果 — 浮き上がりとシャドウの強調 */
 button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(88, 39, 25, 0.25);
+  transform: translateY(-1px);   /* 1px上に移動（浮き上がり効果） */
+  box-shadow: 0 8px 18px rgba(88, 39, 25, 0.25); /* より強いシャドウ */
 }
 
+/* アクションボタングループ — 横並びボタン配置（index.phpのナビボタン等） */
 .actions {
-  display: flex;
-  gap: 8px;
+  display: flex;                 /* フレックスボックスで横並び */
+  gap: 8px;                      /* ボタン間の隙間 */
 }
 
+/* アクションボタングループ内のボタン — 等幅で配置 */
 .actions button {
-  flex: 1;
-  min-width: 0;
+  flex: 1;                       /* 均等な幅で配置 */
+  min-width: 0;                  /* flex-shrinkのための最小幅を0に */
 }
 
+/* インラインフォーム — テーブル行内の削除ボタン用（admin.php） */
 .inline-form { display: inline; }
 
+/* インラインフォーム内のボタン — 幅を自動調整、インラインブロック表示 */
 .inline-form button {
-  width: auto;
-  display: inline-block;
-  margin-left: 6px;
-  padding: 7px 12px;
+  width: auto;                   /* 幅を自動（テキスト幅に合わせる） */
+  display: inline-block;         /* インラインブロック表示 */
+  margin-left: 6px;              /* 左余白（編集リンクとの間隔） */
+  padding: 7px 12px;             /* コンパクトなパディング */
 }
 
+/* ==========================================================================
+   5. メッセージ表示（成功・エラー）
+   admin.php と pharmacy.php で使用
+   ========================================================================== */
+
+/* メッセージ共通スタイル */
 .msg,
 .err {
-  border-radius: 10px;
-  padding: 10px 12px;
-  margin: 10px 0;
-  font-weight: 700;
+  border-radius: 10px;           /* 角丸 */
+  padding: 10px 12px;            /* 内部余白 */
+  margin: 10px 0;                /* 上下の余白 */
+  font-weight: 700;              /* 太字 */
 }
 
+/* 成功メッセージ — 緑系の配色 */
 .msg {
-  background: #e5f4e8;
-  color: #1d6d2a;
-  border: 1px solid #b7ddbc;
+  background: #e5f4e8;           /* 薄い緑の背景 */
+  color: #1d6d2a;                /* 濃い緑のテキスト */
+  border: 1px solid #b7ddbc;     /* 中間緑のボーダー */
 }
 
+/* エラーメッセージ — 赤系の配色 */
 .err {
-  background: #fbe6e6;
-  color: #8f2222;
-  border: 1px solid #efb9b9;
+  background: #fbe6e6;           /* 薄い赤の背景 */
+  color: #8f2222;                /* 濃い赤のテキスト */
+  border: 1px solid #efb9b9;     /* 中間赤のボーダー */
 }
 
+/* ==========================================================================
+   6. グリッドフォーム
+   admin.php と pharmacy.php の入力フォームで使用
+   ========================================================================== */
+
+/* グリッドフォーム — レスポンシブなフォームグリッドレイアウト */
 .grid-form {
   display: grid;
-  gap: 10px;
+  gap: 10px;                     /* グリッド間の隙間 */
+  /* 最小190px、残りの幅を均等に分配する自動フィットレイアウト */
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
 }
 
+/* ==========================================================================
+   7. テーブル（医薬品一覧 — admin.php）
+   ========================================================================== */
+
+/* テーブルカード — テーブルを含むカードのスタイル */
 .table-card {
-  margin-top: 14px;
-  overflow: hidden;
+  margin-top: 14px;              /* 上のカードとの間隔 */
+  overflow: hidden;              /* はみ出しを隠す */
 }
 
+/* テーブルラッパー — テーブルの横スクロール対応コンテナ */
 .table-wrapper {
   width: 100%;
-  overflow-x: auto;
+  overflow-x: auto;              /* 横スクロールを有効化 */
 }
 
+/* テーブル本体 */
 table {
   width: 100%;
-  border-collapse: collapse;
-  background: #fff;
+  border-collapse: collapse;     /* セル間の隙間をなくす */
+  background: #fff;              /* 白背景 */
 }
 
+/* テーブルヘッダー・セル — 共通スタイル */
 th,
 td {
-  border-bottom: 1px solid #eadfcd;
-  padding: 10px;
-  text-align: left;
-  vertical-align: top;
+  border-bottom: 1px solid #eadfcd; /* 行間の区切り線（クリーム色） */
+  padding: 10px;                    /* セル内の余白 */
+  text-align: left;                 /* 左揃え */
+  vertical-align: top;              /* 上揃え */
 }
 
+/* テーブルヘッダー — クリーム色の背景で強調 */
 th {
-  background: #f9f1e2;
-  white-space: nowrap;
+  background: #f9f1e2;           /* ヘッダー背景色 */
+  white-space: nowrap;           /* テキストの折り返しを防止 */
 }
 
+/* ==========================================================================
+   8. 薬袋プレビューエリア（A5サイズ — index.php）
+   ========================================================================== */
+
+/* 薬袋プレビュー — A5サイズ（148mm × 210mm）のプレビューコンテナ */
 .print-area {
-  width: 148mm;
-  min-height: 210mm;
+  width: 148mm;                  /* A5の幅 */
+  min-height: 210mm;             /* A5の高さ（最小） */
   box-sizing: border-box;
-  border: 2px solid var(--theme-color);
+  border: 2px solid var(--theme-color);  /* テーマカラーのボーダー */
+  /* 内側の装飾影 + 外側のソフトシャドウ */
   box-shadow: inset 0 0 0 2px var(--theme-soft), var(--shadow-soft);
-  border-radius: 4px;
-  padding: 5mm 8mm 4mm;
-  background: #fffef8;
-  --theme-color: var(--accent-blue);
-  --theme-soft: #c7d8ef;
-  position: relative;
-  margin: 0 auto;
+  border-radius: 4px;            /* わずかな角丸 */
+  padding: 5mm 8mm 4mm;          /* 内部余白 */
+  background: #fffef8;           /* ほぼ白の温かみのある背景 */
+  --theme-color: var(--accent-blue); /* デフォルトテーマ: 内服薬（青）*/
+  --theme-soft: #c7d8ef;             /* デフォルトのソフトカラー */
+  position: relative;            /* 疑似要素の基準位置 */
+  margin: 0 auto;                /* 中央揃え */
 }
 
+/* 薬袋の上下装飾ライン — ::before と ::after 疑似要素で実装 */
 .print-area::before,
 .print-area::after {
-  content: "";
-  position: absolute;
-  left: 5mm;
-  right: 5mm;
-  height: 2px;
-  background: var(--theme-color);
+  content: "";                   /* 空のコンテンツ */
+  position: absolute;            /* 絶対位置指定 */
+  left: 5mm;                     /* 左端からの余白 */
+  right: 5mm;                    /* 右端からの余白 */
+  height: 2px;                   /* ラインの太さ */
+  background: var(--theme-color); /* テーマカラーのライン */
 }
 
+/* 上の装飾ライン */
 .print-area::before { top: 3.5mm; }
+
+/* 下の装飾ライン */
 .print-area::after { bottom: 3.5mm; }
 
+/* 薬種別タイトル — 薬袋最上部の大きなタイトル（例:「内服薬」） */
 .title {
-  text-align: center;
-  font-size: 56px;
+  text-align: center;            /* 中央揃え */
+  font-size: 56px;               /* 大きなフォントサイズ */
+  /* 明朝体フォントで和の雰囲気 */
   font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
-  font-weight: 700;
-  margin: 5mm 0 2mm;
-  letter-spacing: 0.18em;
-  color: var(--theme-color);
-  text-shadow: 1px 1px 0 #ece1d0;
+  font-weight: 700;              /* 太字 */
+  margin: 5mm 0 2mm;             /* 上下の余白 */
+  letter-spacing: 0.18em;        /* 広い文字間隔 */
+  color: var(--theme-color);     /* テーマカラーで着色 */
+  text-shadow: 1px 1px 0 #ece1d0; /* 薄い影で奥行き感 */
 }
 
+/* 患者名表示 — 薬袋上部の患者名エリア */
 .patient {
-  text-align: center;
-  font-size: 34px;
+  text-align: center;            /* 中央揃え */
+  font-size: 34px;               /* やや大きなフォントサイズ */
   margin-bottom: 8px;
   padding-bottom: 8px;
+  /* テーマカラーの二重線で区切り */
   border-bottom: 2px double var(--theme-color);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.08em;        /* 文字間を少し広げる */
 }
 
+/* 用法・用量ボックス — 薬袋中央の主要情報エリア */
 .box {
-  border: 2px solid var(--theme-color);
-  box-shadow: inset 0 0 0 1px var(--theme-soft);
+  border: 2px solid var(--theme-color); /* テーマカラーのボーダー */
+  box-shadow: inset 0 0 0 1px var(--theme-soft); /* 内側のソフトシャドウ */
   border-radius: 3px;
   padding: 12px;
-  min-height: 95mm;
+  min-height: 95mm;              /* 最小高さを確保 */
+  /* 縦方向の薄い罫線パターン（12mm間隔） */
   background: repeating-linear-gradient(
     180deg,
     rgba(157, 31, 35, 0.06) 0,
@@ -254,62 +363,96 @@ th {
   );
 }
 
+/* 用法ラベル・用法メイン・1日回数 — 共通フォントサイズ */
 .usage-label,
 .usage-main,
 .usage-freq {
-  font-size: 33px;
-  text-align: center;
+  font-size: 33px;               /* 大きめのフォントサイズ */
+  text-align: center;            /* 中央揃え */
 }
 
+/* 用法ラベル — 「用法」の文字（テーマカラーで左寄せ） */
 .usage-label {
-  text-align: left;
-  color: var(--theme-color);
-  font-weight: 700;
+  text-align: left;              /* 左揃え */
+  color: var(--theme-color);     /* テーマカラーで着色 */
+  font-weight: 700;              /* 太字 */
 }
 
+/* 用法メイン・1日回数 — 上の余白 */
 .usage-main,
 .usage-freq { margin-top: 4px; }
 
+/* 医薬品名表示 — 薬袋内の医薬品名 */
 .medicine-name {
-  margin-top: 6mm;
-  font-size: 29px;
-  font-weight: 700;
-  border-top: 1px solid #8d7d6a;
-  padding-top: 3mm;
+  margin-top: 6mm;               /* 上の余白 */
+  font-size: 29px;               /* フォントサイズ */
+  font-weight: 700;              /* 太字 */
+  border-top: 1px solid #8d7d6a; /* 上の区切り線 */
+  padding-top: 3mm;              /* 上のパディング */
 }
 
+/* 医薬品説明表示 — 薬袋内の補足説明エリア */
 .desc { margin-top: 6px; min-height: 40mm; white-space: pre-wrap; }
 
+/* 薬局情報表示 — 薬袋最下部の薬局情報エリア */
 .pharmacy {
-  margin-top: 12mm;
-  font-size: 22px;
-  text-align: center;
+  margin-top: 12mm;              /* 上の余白 */
+  font-size: 22px;               /* フォントサイズ */
+  text-align: center;            /* 中央揃え */
+  /* テーマカラーの二重線で区切り */
   border-top: 2px double var(--theme-color);
   padding-top: 4mm;
-  line-height: 1.4;
-  letter-spacing: 0.04em;
+  line-height: 1.4;              /* 行間 */
+  letter-spacing: 0.04em;        /* 文字間 */
 }
 
+/* ==========================================================================
+   9. テーマカラー切替（医薬品種別ごとのカラー設定）
+   index.php の applyTheme() 関数でクラスが動的に付与される
+   ========================================================================== */
+
+/* 内服薬テーマ（青） — デフォルト */
 .print-area.type-internal { --theme-color: var(--accent-blue); --theme-soft: #c7d8ef; }
+
+/* 外用薬テーマ（赤） */
 .print-area.type-external { --theme-color: var(--accent-red); --theme-soft: #ebc3c6; }
+
+/* 頓服薬テーマ（緑） */
 .print-area.type-as-needed { --theme-color: var(--accent-green); --theme-soft: #c5e2c9; }
 
+/* ==========================================================================
+   10. レスポンシブ対応（画面幅1050px以下）
+   ========================================================================== */
 @media (max-width: 1050px) {
-  body { padding: 14px; }
-  .layout { grid-template-columns: 1fr; }
+  body { padding: 14px; }              /* パディングを縮小 */
+  .layout { grid-template-columns: 1fr; } /* 2カラム → 1カラムに切替 */
 }
 
+/* ==========================================================================
+   11. 印刷用スタイル
+   window.print() 実行時に適用され、薬袋プレビューのみを出力する
+   ========================================================================== */
+
+/* ページサイズ: A5、マージンなし */
 @page { size: A5; margin: 0; }
 
 @media print {
+  /* .no-print クラスの要素を非表示（入力パネル、ヘッダー等） */
   .no-print { display: none !important; }
+
+  /* body: 余白と背景をリセット（白背景で印刷） */
   body { margin: 0; padding: 0; background: #fff; }
+
+  /* レイアウト: グリッドを解除してブロック表示 */
   .layout { display: block; }
+
+  /* 薬袋プレビュー: 印刷用に最適化 */
   .print-area {
-    margin: 0;
-    width: 148mm;
-    min-height: 210mm;
-    border-radius: 0;
+    margin: 0;                   /* 余白なし */
+    width: 148mm;                /* A5の幅 */
+    min-height: 210mm;           /* A5の高さ */
+    border-radius: 0;            /* 角丸を除去（印刷時は不要） */
+    /* 外側のシャドウを除去し、内側のソフトシャドウのみ残す */
     box-shadow: inset 0 0 0 2px var(--theme-soft);
   }
 }
