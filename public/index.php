@@ -1,5 +1,9 @@
 <?php
 
+// [ADDED] ファイル役割: 薬袋作成画面（入力フォーム + A5プレビュー + window.print() 印刷トリガ）。
+// [ADDED] 入出力: PHP側は medicineTypes() を使って初期HTMLを描画。JS側は api.php へfetchし、DOM更新でプレビュー同期を行う。
+// [ADDED] セキュリティ注意: フロントの入力値はそのままDOM.textContentへ反映しておりHTMLとしては挿入していない。最終的な保存時検証はサーバー側バリデーションに依存する。
+
 // PHPの厳密型チェックを有効化し、想定外の型変換を防ぐ
 declare(strict_types=1);
 
@@ -114,6 +118,7 @@ $types = medicineTypes();
       as_needed: '頓服薬'
     };
 
+    // [ADDED] データフロー概要: fetchMedicines()/fetchPharmacy()でAPI取得 -> medicine_list選択または手入力 -> syncPreview()で印刷領域DOMを更新 -> window.print()で印刷。
     // 医薬品検索APIを呼び出し、候補一覧の<select>を更新する関数
     async function fetchMedicines(keyword = '') {
       // URLパラメータとして検索キーワードを付与してAPIへGET送信
@@ -177,6 +182,7 @@ $types = medicineTypes();
 
     // 入力フォームの値を読み取り、薬袋プレビュー表示を同期する関数
     function syncPreview() {
+      // [ADDED] この関数は保存を行わず、入力中の値を表示専用DOMへ反映するのみ（副作用は画面更新）。
       // 患者名入力値を取得
       const patient = document.getElementById('patient_name').value;
       // 選択中の医薬品種別を取得
@@ -214,6 +220,7 @@ $types = medicineTypes();
       if (!selected || !selected.dataset.item) return;
       // data属性のJSON文字列をオブジェクトへ復元
       const item = JSON.parse(selected.dataset.item);
+      // [ADDED] 注意: dataset.item はJSON文字列で保持されるため、壊れた文字列が入るとJSON.parseで例外になり得る（例外処理は未実装）。
       // フォーム各項目へ選択レコードを反映
       document.getElementById('medicine_type').value = item.medicine_type;
       document.getElementById('dosage_usage').value = item.dosage_usage;

@@ -1,5 +1,8 @@
 <?php
 
+// [ADDED] このクラスは database/app.sqlite への接続確立時に schema.sql 適用と初期データ投入までを担当する。
+// [ADDED] initializeSchema() は CREATE TABLE IF NOT EXISTS を前提に、複数回呼ばれてもテーブル作成部分は冪等に実行される。
+
 /**
  * Database.php — データベース接続管理クラス
  *
@@ -50,6 +53,7 @@ final class Database
      */
     public static function connection(): PDO
     {
+        // [ADDED] 副作用: 初回呼び出し時のみ database ディレクトリ作成・SQLiteファイル生成・スキーマ適用を行う。
         // 既に接続が確立されている場合は、そのまま返却（シングルトン）
         if (self::$pdo instanceof PDO) {
             return self::$pdo;
@@ -96,6 +100,7 @@ final class Database
      */
     private static function initializeSchema(PDO $pdo): void
     {
+        // [ADDED] サンプル投入条件は pharmacies 件数が0件のときのみ。既存データが1件以上ある場合はINSERTしない。
         // schema.sql ファイルの内容を読み込み
         $schema = file_get_contents(__DIR__ . '/../database/schema.sql');
 

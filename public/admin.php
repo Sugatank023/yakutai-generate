@@ -1,5 +1,10 @@
 <?php
 
+// [ADDED] ファイル役割: 医薬品マスタCRUD画面（一覧検索・新規登録・編集更新・削除）。
+// [ADDED] 入出力: GETは検索/編集対象取得、POSTは action に応じて create/update/delete を実行し、結果を画面メッセージ表示する。
+// [ADDED] 依存: validateMedicineInput() -> MedicineRepository -> SQLite。
+// [ADDED] セキュリティ注意: 更新系POSTにCSRFトークン検証は実装されていない（要確認）。
+
 // 厳密型チェックを有効化し、意図しない型変換を防ぐ
 declare(strict_types=1);
 
@@ -19,6 +24,7 @@ $error = '';
 
 // POST時（登録・更新・削除）にのみ更新処理を実行
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // [ADDED] サーバー側処理フロー: action判定 -> （create/update時）入力バリデーション -> Repository呼び出し -> 成功/失敗メッセージ設定。
     try {
         // hidden項目actionで処理種別を判定（未指定時はcreate）
         $action = $_POST['action'] ?? 'create';

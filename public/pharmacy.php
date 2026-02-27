@@ -1,5 +1,9 @@
 <?php
 
+// [ADDED] ファイル役割: 薬局情報設定画面（実質1レコード運用の表示・更新）。
+// [ADDED] 入出力: GET表示時は PharmacyRepository::get() 結果をフォーム初期値に使用、POST時は validatePharmacyInput() 後に update() でUpsert。
+// [ADDED] セキュリティ注意: 更新POSTにCSRFトークン検証は見当たらない（要確認）。
+
 // 厳密型チェックを有効化し、入力データの型ゆらぎを抑止する
 declare(strict_types=1);
 
@@ -17,6 +21,7 @@ $error = '';
 
 // POST時（保存ボタン押下時）のみ更新処理を実行する
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // [ADDED] 処理ブロック: 入力取得($_POST) -> バリデーション -> Repository更新 -> 画面用メッセージ設定。
     try {
         // 入力値を検証した上で薬局情報を更新する
         $repository->update(validatePharmacyInput($_POST));
