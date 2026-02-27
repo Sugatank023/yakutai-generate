@@ -1,5 +1,9 @@
 <?php
 
+// [ADDED] ファイル役割: path クエリと REQUEST_METHOD の組み合わせで分岐し、JSONを返すAPIエンドポイント。
+// [ADDED] 入出力: 入力は GET/POST/PUT/DELETE（PUT/DELETEは php://input を parse_str）、出力は header() + json_encode() + 必要に応じて http_response_code()/exit。
+// [ADDED] セキュリティ注意: 認証・認可チェックはこのファイルに実装されていないため、誰が更新系APIを呼べるかは不明（要確認）。
+
 /**
  * api.php — JSON APIエンドポイント
  *
@@ -57,6 +61,7 @@ $path = $_GET['path'] ?? '';
 
 // --- ルーティング処理（try-catchで例外をハンドリング） ---
 try {
+    // [ADDED] 処理フロー: ルート判定 -> メソッド判定 -> バリデーション関数 -> Repository実行 -> JSON返却。
     // =========================================================================
     // 医薬品一覧・新規登録ルート（?path=medicines）
     // =========================================================================
@@ -94,6 +99,7 @@ try {
     // 医薬品個別操作ルート（?path=medicines/{id}）
     // =========================================================================
     // パスからIDを正規表現で抽出（例: 'medicines/123' → $matches[1] = '123'）
+    // [ADDED] パスパラメータ抽出: medicines/{id} の {id} は正規表現で数値のみ許可。
     if (preg_match('#^medicines/(\d+)$#', $path, $matches) === 1) {
         // マッチしたIDを整数に変換
         $id = (int)$matches[1];

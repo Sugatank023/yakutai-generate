@@ -1,5 +1,8 @@
 <?php
 
+// [ADDED] このファイルは画面（index/admin/pharmacy）とAPI（public/api.php）で共通利用され、入力検証の入口を一元化する。
+// [ADDED] セキュリティ注意: CSRFトークン検証処理はこのファイル内に存在しない（POST/PUT更新系の保護方針は不明（要確認））。
+
 /**
  * bootstrap.php — 共通初期化・入力バリデーションファイル
  *
@@ -39,6 +42,7 @@ require_once __DIR__ . '/PharmacyRepository.php';
  */
 function medicineTypes(): array
 {
+    // [ADDED] 戻り値は「内部キー => 表示名」の固定マップ。DB参照は行わない純粋関数。
     return [
         'external' => '外用薬', // 外用薬（塗り薬、貼り薬など）— テーマカラー: 赤
         'internal' => '内服薬', // 内服薬（飲み薬）— テーマカラー: 青
@@ -63,6 +67,7 @@ function medicineTypes(): array
  */
 function validateMedicineInput(array $input): array
 {
+    // [ADDED] 副作用: 不正入力時は InvalidArgumentException を投げ、呼び出し元（画面/API）でエラー表示・422返却に使われる。
     // 必須フィールドの定義
     $required = ['medicine_name', 'medicine_type', 'dosage_usage', 'dosage_amount', 'daily_frequency'];
 
@@ -109,6 +114,7 @@ function validateMedicineInput(array $input): array
  */
 function validatePharmacyInput(array $input): array
 {
+    // [ADDED] 戻り値: trim済み連想配列。副作用: 不正入力時の例外送出のみ（DB更新はしない）。
     // 必須フィールドの定義
     $required = ['pharmacy_name', 'address', 'phone', 'fax'];
 
