@@ -392,7 +392,11 @@ th {
 }
 
 /* 医薬品説明表示 — 薬袋内の補足説明エリア */
-.desc { margin-top: 6px; min-height: 40mm; white-space: pre-wrap; }
+.desc {
+  margin-top: 6px;               /* 医薬品名との間隔 */
+  min-height: 40mm;              /* 説明文が短くても印字領域を確保 */
+  white-space: pre-wrap;         /* 改行入力を保持しつつ折り返す */
+}
 
 /* 薬局情報表示 — 薬袋最下部の薬局情報エリア */
 .pharmacy {
@@ -412,20 +416,33 @@ th {
    ========================================================================== */
 
 /* 内服薬テーマ（青） — デフォルト */
-.print-area.type-internal { --theme-color: var(--accent-blue); --theme-soft: #c7d8ef; }
+.print-area.type-internal {
+  --theme-color: var(--accent-blue); /* 線や見出しに使う主色 */
+  --theme-soft: #c7d8ef;             /* 内側装飾に使う淡色 */
+}
 
 /* 外用薬テーマ（赤） */
-.print-area.type-external { --theme-color: var(--accent-red); --theme-soft: #ebc3c6; }
+.print-area.type-external {
+  --theme-color: var(--accent-red);  /* 外用薬向けの主色 */
+  --theme-soft: #ebc3c6;             /* 外用薬向けの淡色 */
+}
 
 /* 頓服薬テーマ（緑） */
-.print-area.type-as-needed { --theme-color: var(--accent-green); --theme-soft: #c5e2c9; }
+.print-area.type-as-needed {
+  --theme-color: var(--accent-green); /* 頓服薬向けの主色 */
+  --theme-soft: #c5e2c9;              /* 頓服薬向けの淡色 */
+}
 
 /* ==========================================================================
    10. レスポンシブ対応（画面幅1050px以下）
    ========================================================================== */
 @media (max-width: 1050px) {
-  body { padding: 14px; }              /* パディングを縮小 */
-  .layout { grid-template-columns: 1fr; } /* 2カラム → 1カラムに切替 */
+  body {
+    padding: 14px;                 /* 余白を小さくして表示領域を確保 */
+  }
+  .layout {
+    grid-template-columns: 1fr;    /* 2カラム → 1カラムに切替 */
+  }
 }
 
 /* ==========================================================================
@@ -434,7 +451,10 @@ th {
    ========================================================================== */
 
 /* ページサイズ: A5、マージンなし */
-@page { size: A5; margin: 0; }
+@page {
+  size: A5;                        /* 用紙サイズをA5に固定 */
+  margin: 0;                       /* ブラウザ既定余白を無効化 */
+}
 
 @media print {
   /* .no-print クラスの要素を非表示（入力パネル、ヘッダー等） */
